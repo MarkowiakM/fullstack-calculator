@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+# Pre-commit checks, scoped independently to backend/ and frontend/ so a
+# commit touching only one side doesn't need the other side's toolchain.
+#
+# Not installed automatically — enable once per clone with:
+#   git config core.hooksPath .githooks
+set -euo pipefail
+
+status=0
+
+mapfile -d '' -t staged < <(git diff --cached --name-only --diff-filter=ACM -z)
+
+backend_files=()
+frontend_files=()
+for f in "${staged[@]}"; do
+  case "$f" in
+    backend/*.go) backend_files+=("${f#backend/}") ;;
+    frontend/*.ts|frontend/*.tsx|frontend/*.js|frontend/*.jsx|frontend/*.css|frontend/*.json)
+      frontend_files+=("${f#frontend/}") ;;
+  esac
+done
+
+if [ "${#backend_files[@]}" -gt 0 ]; then
+  echo "-- backend: gofmt"
+  unformatted=$(cd backend && gofmt -l "${backend_files[@]}")
+  if [ -n "$unformatted" ]; then
+    echo "gofmt found unformatted files (run 'gofmt -w' on them):"
+    echo "$unformatted"
+    status=1
+  fi
+
+  echo "-- backend: go vet"
+  (cd backend && go vet ./...) || status=1
+fi
+
+if [ "${#frontend_files[@]}" -gt 0 ]; then
+  echo "-- frontend: eslint"
+  (cd frontend && npx eslint "${frontend_files[@]}") || status=1
+
+  echo "-- frontend: prettier --check"
+  (cd frontend && npx prettier --check "${frontend_files[@]}") || status=1
+fi
+
+exit "$status"

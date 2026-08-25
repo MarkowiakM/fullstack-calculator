@@ -108,3 +108,10 @@ driven than a polished one-shot prompt would be.
   (kept in sync with the production Dockerfile), so `@latest` failed the
   build outright.
 
+## Phase 8 — Pre-commit hook
+
+- Plain `.githooks/pre-commit` script, and backend/frontend checks stay independently scoped. Runs
+  `gofmt`/`go vet` on staged `backend/*.go`, `eslint`/`prettier --check` on
+  staged `frontend/*.{ts,tsx,js,jsx,css,json}`, each only when that side has
+  staged files. Opt-in via `git config core.hooksPath .githooks`.
+

@@ -42,6 +42,7 @@ cd frontend && npm run lint && npx vitest run --coverage && npm run build
 
 # Full stack
 docker compose up --build   # or: make up
+make dev                    # hot-reload dev mode instead
 ```
 
 ## Pre-commit hook
