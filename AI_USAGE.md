@@ -268,3 +268,13 @@ driven than a polished one-shot prompt would be.
   the overflow edge case is `2^5000` (the backend's actual exponent cap)
   rather than the mockup's fake `1e308 × 10`, since decimal arithmetic
   doesn't overflow the way its float64 demo logic did.
+
+## Phase 23 — README and screenshots
+
+- Full write-up: architecture, quick start, every operation and error
+  code, the design decisions and their rejected alternatives, coverage
+  numbers, and an honest note that `Header`/`ApiPanel` are covered by
+  live browser verification rather than unit tests, the same pattern
+  already used for `cmd/server`'s low coverage.
+- Screenshots captured against the real running stack (idle, a result,
+  and the division-by-zero error), not mocked or hand-edited.
