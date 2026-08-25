@@ -54,8 +54,18 @@ driven than a polished one-shot prompt would be.
   (flat config) + Prettier (semicolons, double quotes). Tailwind v4 via
   `@tailwindcss/vite`, Vitest + React Testing Library wired into
   `vite.config.ts` directly via the `vitest/config` triple-slash reference.
-- `shadcn init` hit the same alias-resolution bug a second time — it wrote
-  `Button`/`utils` into a literal `frontend/@/` folder instead of `src/`
-  Moved the files into `src/components/ui`
-  and `src/lib`, confirmed the build and lint pass with the alias resolving
-  correctly before moving on.
+- `shadcn init` wrote `Button`/`utils` into a literal `frontend/@/` folder
+  instead of resolving the `@/*` alias to `src/`. Moved the files into
+  `src/components/ui` and `src/lib`, confirmed the build and lint pass with
+  the alias resolving correctly before moving on.
+
+## Phase 4 — Backend Dockerfile
+
+- Multi-stage: `golang:1.23-alpine` compiles a static binary
+  (`CGO_ENABLED=0`), the runtime stage is plain `alpine` with just the
+  binary and `ca-certificates` — no Go toolchain or source in the shipped
+  image. `HEALTHCHECK` hits `/health` directly.
+- Dockerizes the walking-skeleton server as-is; nothing about the Dockerfile
+  needs to change once the real API lands in a later phase — `go build
+  ./cmd/server` doesn't care how big the package graph behind that entrypoint
+  gets.

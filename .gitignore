@@ -4,6 +4,7 @@
 # Go
 backend/*.out
 backend/coverage.html
+backend/server
 
 # Node / Vite
 frontend/node_modules/
