@@ -138,3 +138,15 @@ driven than a polished one-shot prompt would be.
   answer an `OPTIONS` preflight before the handler's own method check runs
   — a method-prefixed pattern 405s the preflight at the mux level first.
 
+## Phase 11 — API documentation
+
+- OpenAPI spec + a ReDoc page (CDN bundle, no build step) describing both
+  endpoints against the real request/response shapes and error codes.
+- Served directly by the backend at `GET /docs` and `GET /docs/openapi.yaml`
+  via `go:embed`, rather than left as static files — self-contained in the
+  binary, no Dockerfile changes needed. Files live in `internal/api/` so
+  they're part of the module `go:embed` reads from.
+- `spec-url` is absolute (`/docs/openapi.yaml`), not relative — a relative
+  reference from a page served at `/docs` (no trailing slash) resolves
+  against the parent path per normal URL rules, not `/docs/openapi.yaml`.
+

@@ -136,6 +136,8 @@ func NewMux(allowedOrigin string) http.Handler {
 		RequestID, Recover, CORS(allowedOrigin), Timeout(requestTimeout),
 	))
 	mux.Handle("GET /health", http.HandlerFunc(HealthHandler))
+	mux.Handle("GET /docs", http.HandlerFunc(DocsHandler))
+	mux.Handle("GET /docs/openapi.yaml", http.HandlerFunc(OpenAPISpecHandler))
 
 	return mux
 }
