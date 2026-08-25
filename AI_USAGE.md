@@ -223,4 +223,13 @@ driven than a polished one-shot prompt would be.
 - Five behavior tests against real button presses and keyboard input, axios
   mocked at the network boundary.
 
+## Phase 20 — Dev-mode proxy fix
+
+- `make dev` requests to `/api/*` failed with `ECONNREFUSED`: Vite's proxy
+  target was hardcoded to `http://localhost:8080`, but inside the frontend
+  container `localhost` is that container itself, not the backend one.
+  Made the target configurable (`VITE_PROXY_TARGET`, still defaulting to
+  `localhost:8080` for plain `npm run dev`), with `docker-compose.dev.yml`
+  overriding it to the backend's compose service name. Verified with a real
+  request through the running dev stack before tearing it down.
 

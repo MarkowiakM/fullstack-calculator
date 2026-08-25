@@ -15,8 +15,11 @@ export default defineConfig({
   server: {
     proxy: {
       // Local (non-Docker) dev: the backend runs separately on :8080.
+      // `make dev` overrides this to the backend's compose service name,
+      // since "localhost" inside the frontend container is the container
+      // itself, not the backend one.
       "/api": {
-        target: "http://localhost:8080",
+        target: process.env.VITE_PROXY_TARGET ?? "http://localhost:8080",
         changeOrigin: true,
       },
     },
