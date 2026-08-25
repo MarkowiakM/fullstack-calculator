@@ -168,3 +168,16 @@ driven than a polished one-shot prompt would be.
   staged-file list in two: `.ts`/`.tsx`/`.js`/`.jsx` go through both eslint
   and prettier, `.css`/`.json` go through prettier only.
 
+## Phase 14 — Calculator state machine
+
+- `appendDigit.ts` (leading-zero replacement, single decimal point, 12-digit
+  cap) and `reducer.ts` (the discriminated-union state machine from the
+  transition table) as pure functions, no components yet.
+- `RESOLVED`/`REJECTED` are handled ahead of the per-state dispatch, since
+  they're valid only when `state.status === "computing"` and
+  `action.requestId` matches — anything else (wrong state, stale id) is
+  discarded, which is the race-condition guard.
+- Table-driven tests per state, including both bug-class cells (backspace
+  cancelling a pending operator, `=` refusing to fire with no second
+  operand) and the stale-requestId discard. 100% statement coverage.
+
