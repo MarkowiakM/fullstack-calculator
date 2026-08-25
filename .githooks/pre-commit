@@ -11,12 +11,16 @@ status=0
 mapfile -d '' -t staged < <(git diff --cached --name-only --diff-filter=ACM -z)
 
 backend_files=()
-frontend_files=()
+frontend_lint_files=()
+frontend_format_files=()
 for f in "${staged[@]}"; do
   case "$f" in
     backend/*.go) backend_files+=("${f#backend/}") ;;
-    frontend/*.ts|frontend/*.tsx|frontend/*.js|frontend/*.jsx|frontend/*.css|frontend/*.json)
-      frontend_files+=("${f#frontend/}") ;;
+    frontend/*.ts|frontend/*.tsx|frontend/*.js|frontend/*.jsx)
+      frontend_lint_files+=("${f#frontend/}")
+      frontend_format_files+=("${f#frontend/}") ;;
+    frontend/*.css|frontend/*.json)
+      frontend_format_files+=("${f#frontend/}") ;;
   esac
 done
 
@@ -33,12 +37,14 @@ if [ "${#backend_files[@]}" -gt 0 ]; then
   (cd backend && go vet ./...) || status=1
 fi
 
-if [ "${#frontend_files[@]}" -gt 0 ]; then
+if [ "${#frontend_lint_files[@]}" -gt 0 ]; then
   echo "-- frontend: eslint"
-  (cd frontend && npx eslint "${frontend_files[@]}") || status=1
+  (cd frontend && npx eslint "${frontend_lint_files[@]}") || status=1
+fi
 
+if [ "${#frontend_format_files[@]}" -gt 0 ]; then
   echo "-- frontend: prettier --check"
-  (cd frontend && npx prettier --check "${frontend_files[@]}") || status=1
+  (cd frontend && npx prettier --check "${frontend_format_files[@]}") || status=1
 fi
 
 exit "$status"

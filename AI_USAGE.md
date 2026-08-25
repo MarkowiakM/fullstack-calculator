@@ -160,3 +160,11 @@ driven than a polished one-shot prompt would be.
   so the reducer can tell it apart from a real failure.
 - 100% statement coverage.
 
+## Phase 13 — Pre-commit hook fix
+
+- The hook ran `eslint` on every staged `frontend/*.json` file, including
+  `package.json`/`package-lock.json` — ESLint has no JSON config here, so it
+  printed "file ignored" warnings on every commit touching them. Split the
+  staged-file list in two: `.ts`/`.tsx`/`.js`/`.jsx` go through both eslint
+  and prettier, `.css`/`.json` go through prettier only.
+
