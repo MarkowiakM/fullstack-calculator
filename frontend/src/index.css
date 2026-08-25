@@ -50,7 +50,7 @@
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
 
-  --color-calc-card: rgba(243, 237, 255, 0.08);
+  --color-calc-card: #f3edff;
   --color-calc-display-start: #241338;
   --color-calc-display-end: #190d2a;
   --color-calc-text: #f3edff;

@@ -60,7 +60,7 @@ function Key({ def, onPress }: { def: KeyDef; onPress: (key: KeyPress) => void }
       type="button"
       aria-label={def.ariaLabel}
       onClick={() => onPress(def.press)}
-      className={`font-poppins h-[62px] rounded-2xl border border-transparent text-xl transition-[background-color] duration-150 active:translate-y-px active:scale-[.985] ${
+      className={`font-poppins focus-visible:ring-calc-eq h-[62px] rounded-2xl border border-transparent text-xl transition-[background-color] duration-150 outline-none focus-visible:ring-2 active:translate-y-px active:scale-[.985] ${
         def.span === 2 ? "col-span-2" : ""
       } ${KIND_CLASSES[def.kind]}`}
     >

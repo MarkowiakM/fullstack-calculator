@@ -207,3 +207,14 @@ driven than a polished one-shot prompt would be.
   aren't valid Tailwind syntax (0–100%, not a multiplier) — redefined the
   translucent tokens as solid colors and applied opacity via the standard
   `/N` modifier.
+
+## Phase 18 — Calculator component
+
+- Wires `reducer` + `api/client` + `Display` + `Keypad`; the async call and
+  its cancellation live in one `useEffect` keyed on `state` — entering
+  `computing` fires the request, the effect's cleanup aborts it, so leaving
+  `computing` via any path (a new calculation or `CLEAR`) cancels the
+  previous one for free, no manual `AbortController` bookkeeping.
+  `percentage`'s operands are swapped client-side (`200, %, 50` → `50% of
+  200`, matching a physical calculator; the API itself is literal `a% of b`).
+
