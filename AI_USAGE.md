@@ -47,3 +47,15 @@ driven than a polished one-shot prompt would be.
   low (~23%) by design — `main()`'s signal-handling loop isn't meaningfully
   unit-testable and isn't where the risk lives; the pieces that are worth
   testing are tested.
+
+## Phase 3 — Frontend walking skeleton
+
+- Vite's `react-ts` template, then swapped its default `oxlint` for ESLint
+  (flat config) + Prettier (semicolons, double quotes). Tailwind v4 via
+  `@tailwindcss/vite`, Vitest + React Testing Library wired into
+  `vite.config.ts` directly via the `vitest/config` triple-slash reference.
+- `shadcn init` hit the same alias-resolution bug a second time — it wrote
+  `Button`/`utils` into a literal `frontend/@/` folder instead of `src/`
+  Moved the files into `src/components/ui`
+  and `src/lib`, confirmed the build and lint pass with the alias resolving
+  correctly before moving on.
