@@ -80,3 +80,18 @@ driven than a polished one-shot prompt would be.
   nor an absolute backend URL baked into the frontend build — `VITE_API_URL`
   stays optional, for the case of pointing the frontend at a backend on a
   genuinely different origin.
+
+## Phase 6 — Docker Compose: the milestone
+
+- `docker-compose.yml` wires both services on one network with a
+  healthcheck-gated `depends_on`, so the frontend container doesn't start
+  serving until the backend actually answers `/health`, not just once its
+  process has started.
+- Root `Makefile` as the single entrypoint (`make up`, `make test`, ...).
+  `up` depends on `backend/.env`/`frontend/.env` file targets that copy from
+  the committed `.env.example` files automatically if missing — `make up`
+  works on a bare clone with no manual setup step.
+- `make test-docker` builds only each Dockerfile's `builder` stage and runs
+  tests inside that, rather than `docker exec` into the running containers —
+  the production images are deliberately stripped of the Go/Node toolchain
+  and source, so there'd be nothing to run tests with in there.
