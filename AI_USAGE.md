@@ -32,3 +32,18 @@ driven than a polished one-shot prompt would be.
   operand" gets shipped.
 - Single `main` branch, conventional commits, a `docs/` folder for anything
   that isn't the app itself.
+
+## Phase 2 — Backend walking skeleton
+
+- Smallest possible backend that runs: `go.mod`, `cmd/server/main.go` with
+  just `GET /health`. The full server lifecycle (timeouts,
+  graceful shutdown on SIGINT/SIGTERM) was written now rather than deferred,
+  since that plumbing doesn't change shape when the real API lands later —
+  only the mux's routes do.
+- Booted it for real and hit `/health` with `curl` before trusting the test
+  suite alone — same habit as the rest of this build: verify live, then
+  write the test that pins it down.
+- One handler test, one env-var-fallback test. Coverage on this package is
+  low (~23%) by design — `main()`'s signal-handling loop isn't meaningfully
+  unit-testable and isn't where the risk lives; the pieces that are worth
+  testing are tested.
