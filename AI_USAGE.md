@@ -218,3 +218,9 @@ driven than a polished one-shot prompt would be.
   `percentage`'s operands are swapped client-side (`200, %, 50` → `50% of
   200`, matching a physical calculator; the API itself is literal `a% of b`).
 
+## Phase 19 — Calculator component tests
+
+- Five behavior tests against real button presses and keyboard input, axios
+  mocked at the network boundary.
+
+
