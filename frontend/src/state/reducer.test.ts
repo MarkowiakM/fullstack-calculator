@@ -148,22 +148,27 @@ describe("reducer — computing", () => {
   });
 
   it("REJECTED with a matching requestId moves to error", () => {
-    expect(reducer(computing, { type: "REJECTED", requestId: 1, message: "boom" })).toEqual({
+    expect(
+      reducer(computing, { type: "REJECTED", requestId: 1, message: "boom", code: "INTERNAL" }),
+    ).toEqual({
       status: "error",
       message: "boom",
+      code: "INTERNAL",
     });
   });
 
   it("REJECTED with a stale requestId is discarded", () => {
-    expect(reducer(computing, { type: "REJECTED", requestId: 999, message: "wrong" })).toBe(
-      computing,
-    );
+    expect(
+      reducer(computing, { type: "REJECTED", requestId: 999, message: "wrong", code: "INTERNAL" }),
+    ).toBe(computing);
   });
 
   it("RESOLVED/REJECTED arriving outside of computing is discarded", () => {
     const s = enteringFirst("5");
     expect(reducer(s, { type: "RESOLVED", requestId: 1, value: "3" })).toBe(s);
-    expect(reducer(s, { type: "REJECTED", requestId: 1, message: "boom" })).toBe(s);
+    expect(reducer(s, { type: "REJECTED", requestId: 1, message: "boom", code: "INTERNAL" })).toBe(
+      s,
+    );
   });
 });
 
@@ -195,7 +200,7 @@ describe("reducer — result", () => {
 });
 
 describe("reducer — error", () => {
-  const error: State = { status: "error", message: "division by zero" };
+  const error: State = { status: "error", message: "division by zero", code: "DIVISION_BY_ZERO" };
 
   it("DIGIT starts a fresh calculation", () => {
     expect(reducer(error, { type: "DIGIT", value: "4" })).toEqual(enteringFirst("4"));
@@ -220,7 +225,7 @@ describe("reducer — CLEAR", () => {
       enteringSecond("1", "add", "2"),
       { status: "computing", requestId: 1, operation: "add", operands: ["1", "2"], preview: "2" },
       { status: "result", value: "3" },
-      { status: "error", message: "boom" },
+      { status: "error", message: "boom", code: "INTERNAL" },
     ];
     for (const s of states) {
       expect(reducer(s, { type: "CLEAR" })).toEqual(initialState);
@@ -243,7 +248,7 @@ describe("displayValue", () => {
       }),
     ).toBe("2");
     expect(displayValue({ status: "result", value: "15" })).toBe("15");
-    expect(displayValue({ status: "error", message: "boom" })).toBe("boom");
+    expect(displayValue({ status: "error", message: "boom", code: "INTERNAL" })).toBe("boom");
   });
 });
 
@@ -251,7 +256,7 @@ describe("expressionLine", () => {
   it("is blank while entering the first operand, on a result, or on an error", () => {
     expect(expressionLine(enteringFirst("12"))).toBe("");
     expect(expressionLine({ status: "result", value: "15" })).toBe("");
-    expect(expressionLine({ status: "error", message: "boom" })).toBe("");
+    expect(expressionLine({ status: "error", message: "boom", code: "INTERNAL" })).toBe("");
   });
 
   it("shows 'first operator' while awaiting or entering the second operand", () => {

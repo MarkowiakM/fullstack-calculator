@@ -1,5 +1,5 @@
 import type { BinaryOp, Operation } from "@/types";
-import { appendDigit } from "./appendDigit";
+import { appendDigit } from "@/utils/appendDigit";
 
 export type State =
   | { status: "entering_first"; input: string }
@@ -13,7 +13,7 @@ export type State =
       preview: string;
     }
   | { status: "result"; value: string }
-  | { status: "error"; message: string };
+  | { status: "error"; message: string; code: string };
 
 type LiveAction =
   | { type: "DIGIT"; value: string }
@@ -26,7 +26,7 @@ export type Action =
   | LiveAction
   | { type: "CLEAR" }
   | { type: "RESOLVED"; requestId: number; value: string }
-  | { type: "REJECTED"; requestId: number; message: string };
+  | { type: "REJECTED"; requestId: number; message: string; code: string };
 
 export const initialState: State = { status: "entering_first", input: "0" };
 
@@ -199,7 +199,7 @@ export function reducer(state: State, action: Action): State {
       if (state.status !== "computing" || action.requestId !== state.requestId) return state;
       return action.type === "RESOLVED"
         ? { status: "result", value: action.value }
-        : { status: "error", message: action.message };
+        : { status: "error", message: action.message, code: action.code };
     default:
       switch (state.status) {
         case "entering_first":

@@ -1,7 +1,14 @@
 import axios from "axios";
 import type { Operation } from "@/types";
 
-export class CalculationError extends Error {}
+export class CalculationError extends Error {
+  code: string;
+
+  constructor(message: string, code: string) {
+    super(message);
+    this.code = code;
+  }
+}
 
 interface CalculateResponse {
   operation: Operation;
@@ -30,9 +37,12 @@ export async function calculate(
       throw err;
     }
     if (axios.isAxiosError(err)) {
-      const message = (err.response?.data as ErrorBody | undefined)?.error?.message;
-      throw new CalculationError(message ?? "Unable to reach the server");
+      const body = (err.response?.data as ErrorBody | undefined)?.error;
+      throw new CalculationError(
+        body?.message ?? "Unable to reach the server",
+        body?.code ?? "NETWORK_ERROR",
+      );
     }
-    throw new CalculationError("Unable to reach the server");
+    throw new CalculationError("Unable to reach the server", "NETWORK_ERROR");
   }
 }

@@ -29,6 +29,9 @@ describe("calculate", () => {
 
     await expect(calculate("divide", ["10", "0"])).rejects.toThrow(CalculationError);
     await expect(calculate("divide", ["10", "0"])).rejects.toThrow("division by zero");
+    await expect(calculate("divide", ["10", "0"])).rejects.toMatchObject({
+      code: "DIVISION_BY_ZERO",
+    });
   });
 
   it("throws a friendly CalculationError when the network request itself fails", async () => {

@@ -188,3 +188,15 @@ driven than a polished one-shot prompt would be.
 - Google Fonts `@import` had to move to the very first line: `@import`
   rules must precede all other rules.
 
+## Phase 16 — Display component
+
+- Threaded the backend's machine-readable error `code` through
+  `CalculationError` and the reducer's `error` state/`REJECTED` action
+  (previously message-only) so `Display` can render the error-code badge
+  from the reference design — the backend already returns it for exactly
+  this purpose.
+- Presentational component driven by `displayValue`/`expressionLine`;
+  dynamic result font size (56/42/32/20px) by character count, `role="status"
+  aria-live="polite"`.
+- Verified with a Playwright screenshot (both a mid-entry and an error
+  state) before moving on. 100% statement coverage.
