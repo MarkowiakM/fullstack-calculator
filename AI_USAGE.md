@@ -69,3 +69,14 @@ driven than a polished one-shot prompt would be.
   needs to change once the real API lands in a later phase — `go build
   ./cmd/server` doesn't care how big the package graph behind that entrypoint
   gets.
+
+## Phase 5 — Frontend Dockerfile
+
+- Multi-stage: `node:22-alpine` builds the static bundle, `nginx:1.27-alpine`
+  serves it — no Node toolchain in the shipped image.
+- `nginx.conf` reverse-proxies `/api/` to the backend container by its
+  compose service name. This means the browser only ever talks to one
+  origin (the frontend's), so the containerized setup needs neither CORS
+  nor an absolute backend URL baked into the frontend build — `VITE_API_URL`
+  stays optional, for the case of pointing the frontend at a backend on a
+  genuinely different origin.
