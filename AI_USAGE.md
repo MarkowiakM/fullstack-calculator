@@ -115,3 +115,16 @@ driven than a polished one-shot prompt would be.
   staged `frontend/*.{ts,tsx,js,jsx,css,json}`, each only when that side has
   staged files. Opt-in via `git config core.hooksPath .githooks`.
 
+## Phase 9 — Backend domain logic
+
+- `internal/calc`: 7 operations as pure functions returning
+  `(decimal.Decimal, error)`. `add`/`subtract`/`multiply`/`divide` use
+  `shopspring/decimal` throughout; `sqrt`/`power` fall back to `float64` —
+  no exact decimal algorithm for irrational results.
+- Division rounds to a fixed 10-decimal scale; the other three core ops need
+  no rounding since decimal arithmetic on finite inputs is exact.
+- `power`'s exponent magnitude is capped before computing, so `2^5000`
+  fails fast instead of producing `+Inf`.
+- Table-driven tests per operation, `errors.Is` against sentinel errors.
+  95.5% coverage.
+
