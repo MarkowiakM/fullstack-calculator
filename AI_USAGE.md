@@ -278,3 +278,9 @@ driven than a polished one-shot prompt would be.
   already used for `cmd/server`'s low coverage.
 - Screenshots captured against the real running stack (idle, a result,
   and the division-by-zero error), not mocked or hand-edited.
+- Checked the README against the assignment's own checklist and filled
+  two gaps: running each service standalone (not just via Docker) got
+  its own copy-paste commands, and the single API example became four —
+  a success, an exact-decimal check, and one case each for 422 and 400 —
+  all run against the real backend before being pasted in, not
+  hand-written.

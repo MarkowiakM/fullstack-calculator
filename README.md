@@ -38,8 +38,18 @@ automatically on a bare clone — no manual setup step.
 make dev   # air for the backend, Vite's dev server for the frontend
 ```
 
-Or without Docker: `cd backend && go run ./cmd/server`, `cd frontend && npm
-install && npm run dev`.
+### Running each service on its own (no Docker)
+
+```bash
+# backend — http://localhost:8080
+cd backend
+go run ./cmd/server
+
+# frontend — http://localhost:5173, proxies /api to :8080
+cd frontend
+npm install
+npm run dev
+```
 
 ## API
 
@@ -57,6 +67,35 @@ POST /api/v1/calculations
 Operands and results are JSON **strings**, never JSON numbers — a JSON
 number decodes to `float64` before `decimal` ever sees it, which would
 destroy the precision the whole backend exists to preserve.
+
+Runnable examples (against `make up`, base URL `localhost:8000`; use `:8080`
+for a non-Docker backend):
+
+```bash
+# a normal calculation
+curl -X POST localhost:8000/api/v1/calculations \
+  -H 'Content-Type: application/json' \
+  -d '{"operation": "add", "operands": ["12", "3"]}'
+# {"operation":"add","operands":["12","3"],"result":"15"}
+
+# exact decimal precision — the reason this isn't float64
+curl -X POST localhost:8000/api/v1/calculations \
+  -H 'Content-Type: application/json' \
+  -d '{"operation": "add", "operands": ["0.1", "0.2"]}'
+# {"operation":"add","operands":["0.1","0.2"],"result":"0.3"}
+
+# a 422 error case — division by zero
+curl -X POST localhost:8000/api/v1/calculations \
+  -H 'Content-Type: application/json' \
+  -d '{"operation": "divide", "operands": ["10", "0"]}'
+# {"error":{"code":"DIVISION_BY_ZERO","message":"division by zero"}}
+
+# a 400 error case — unknown operation
+curl -X POST localhost:8000/api/v1/calculations \
+  -H 'Content-Type: application/json' \
+  -d '{"operation": "modulo", "operands": ["10", "3"]}'
+# {"error":{"code":"UNKNOWN_OPERATION","message":"unknown operation \"modulo\""}}
+```
 
 | Operation    | Arity | Notes                                    |
 | ------------ | ----- | ----------------------------------------- |
