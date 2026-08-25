@@ -95,3 +95,16 @@ driven than a polished one-shot prompt would be.
   tests inside that, rather than `docker exec` into the running containers —
   the production images are deliberately stripped of the Go/Node toolchain
   and source, so there'd be nothing to run tests with in there.
+
+## Phase 7 — Dev-mode Docker tooling
+
+- Separate `Dockerfile.dev` per service, kept apart from the production
+  `Dockerfile`s: backend runs `air` for hot-reload-on-save, frontend runs
+  Vite's own dev server with HMR. `docker-compose.dev.yml` bind-mounts the
+  source into each container so edits on the host take effect without a
+  rebuild; `make dev` wires it together.
+- Pinned `air` to `v1.61.7` instead of `@latest` — the newest release
+  requires a Go toolchain newer than the `golang:1.23-alpine` base image
+  (kept in sync with the production Dockerfile), so `@latest` failed the
+  build outright.
+

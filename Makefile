@@ -1,10 +1,17 @@
-.PHONY: up down build logs test test-backend test-frontend test-docker fmt clean
+.PHONY: up dev down build logs test test-backend test-frontend test-docker fmt clean
 
 up: backend/.env frontend/.env
 	docker compose up --build
 
+# Hot-reloading dev mode (air for the backend, Vite's own dev server for
+# the frontend) with source bind-mounted in — for iterating on the code,
+# not for evaluating the deployable build (see `make up` for that).
+dev: backend/.env frontend/.env
+	docker compose -f docker-compose.dev.yml up --build
+
 down:
 	docker compose down
+	docker compose -f docker-compose.dev.yml down
 
 build:
 	docker compose build

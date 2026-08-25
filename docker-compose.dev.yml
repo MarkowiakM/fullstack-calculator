@@ -1,0 +1,23 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    env_file: ./backend/.env
+    ports:
+      - "8000:8080"
+    volumes:
+      - ./backend:/src
+      - /src/tmp
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/src
+      - /src/node_modules
+    depends_on:
+      - backend

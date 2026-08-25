@@ -5,6 +5,7 @@
 backend/*.out
 backend/coverage.html
 backend/server
+backend/tmp/
 
 # Node / Vite
 frontend/node_modules/
