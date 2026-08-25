@@ -17,7 +17,7 @@ describe("Calculator", () => {
   });
 
   it("12 + 3 = shows 15", async () => {
-    mockedAxios.post.mockResolvedValue({ data: { result: "15" } });
+    mockedAxios.post.mockResolvedValue({ status: 200, data: { result: "15" } });
     render(<Calculator />);
 
     press("1");
@@ -32,14 +32,10 @@ describe("Calculator", () => {
   });
 
   it("10 ÷ 0 = shows a division-by-zero message", async () => {
-    mockedAxios.post.mockRejectedValue(
-      Object.assign(new Error("422"), {
-        isAxiosError: true,
-        response: { data: { error: { code: "DIVISION_BY_ZERO", message: "division by zero" } } },
-      }),
-    );
-    mockedAxios.isAxiosError.mockReturnValue(true);
-    mockedAxios.isCancel.mockReturnValue(false);
+    mockedAxios.post.mockResolvedValue({
+      status: 422,
+      data: { error: { code: "DIVISION_BY_ZERO", message: "division by zero" } },
+    });
     render(<Calculator />);
 
     press("1");
@@ -76,11 +72,13 @@ describe("Calculator", () => {
   });
 
   it("discards a stale response that resolves after a newer calculation", async () => {
-    let resolveFirst: (value: { data: { result: string } }) => void;
+    let resolveFirst: (value: { status: number; data: { result: string } }) => void;
     const first = new Promise((resolve) => {
       resolveFirst = resolve;
     });
-    mockedAxios.post.mockReturnValueOnce(first).mockResolvedValueOnce({ data: { result: "20" } });
+    mockedAxios.post
+      .mockReturnValueOnce(first)
+      .mockResolvedValueOnce({ status: 200, data: { result: "20" } });
     render(<Calculator />);
 
     press("5");
@@ -99,9 +97,31 @@ describe("Calculator", () => {
       timeout: 3000,
     });
 
-    resolveFirst!({ data: { result: "8" } });
+    resolveFirst!({ status: 200, data: { result: "8" } });
     await new Promise((r) => setTimeout(r, 0));
 
     expect(screen.getByRole("status")).toHaveTextContent("20");
+  });
+
+  it("an externally triggered run (an API panel edge case) shows on the display and is reported via onExchange", async () => {
+    mockedAxios.post.mockResolvedValue({
+      status: 422,
+      data: { error: { code: "NEGATIVE_SQRT", message: "square root of a negative number" } },
+    });
+    const onExchange = vi.fn();
+    render(
+      <Calculator
+        run={{ operation: "sqrt", operands: ["-9"], nonce: 1 }}
+        onExchange={onExchange}
+      />,
+    );
+
+    await waitFor(
+      () => expect(screen.getByRole("status")).toHaveTextContent("square root of a negative number"),
+      { timeout: 3000 },
+    );
+    expect(onExchange).toHaveBeenCalledWith(
+      expect.objectContaining({ operation: "sqrt", operands: ["-9"], status: 422 }),
+    );
   });
 });

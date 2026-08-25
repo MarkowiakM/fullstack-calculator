@@ -25,6 +25,7 @@ type LiveAction =
 export type Action =
   | LiveAction
   | { type: "CLEAR" }
+  | { type: "RUN"; requestId: number; operation: Operation; operands: string[] }
   | { type: "RESOLVED"; requestId: number; value: string }
   | { type: "REJECTED"; requestId: number; message: string; code: string };
 
@@ -194,6 +195,14 @@ export function reducer(state: State, action: Action): State {
   switch (action.type) {
     case "CLEAR":
       return initialState;
+    case "RUN":
+      return {
+        status: "computing",
+        requestId: action.requestId,
+        operation: action.operation,
+        operands: action.operands,
+        preview: action.operands[action.operands.length - 1],
+      };
     case "RESOLVED":
     case "REJECTED":
       if (state.status !== "computing" || action.requestId !== state.requestId) return state;

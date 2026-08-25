@@ -233,3 +233,38 @@ driven than a polished one-shot prompt would be.
   overriding it to the backend's compose service name. Verified with a real
   request through the running dev stack before tearing it down.
 
+## Phase 21 — CI
+
+- Two independent GitHub Actions jobs, matching the Docker base image
+  versions: `go 1.23`/`gofmt -l`/`go vet`/`go test -cover` for the backend,
+  `node 22`/`npm ci`/lint/`vitest --coverage`/`build` for the frontend.
+
+## Phase 22 — Header, API-call panel, and a pixel pass against the mockup
+
+- Added `Header` (logo, title, live API-status badge) and `ApiPanel`
+  (real request/response, latency, and four one-click edge cases —
+  division by zero, negative sqrt, the power-exponent cap, and a
+  0.1+0.2 precision check) around the existing `Calculator`, replacing
+  the single centered card with the two-column layout from the original
+  Claude Design mockup.
+- The two panels are wired through real state, not cosmetic: an edge
+  case runs through the same reducer as a keypad press (a new `RUN`
+  action, handled unconditionally like `CLEAR`), so its result lands on
+  the calculator's own display; conversely every calculation, however
+  triggered, reports its request/response/latency up to the API panel.
+  `api/client.ts`'s `calculate` changed from throwing on a non-2xx
+  response to always resolving with the real status and body — both
+  surfaces interpret the same exchange instead of duplicating network
+  calls.
+- Re-extracted the original mockup's source (colors, spacing, radii,
+  font sizes) rather than eyeballing the screenshot, and matched them
+  exactly: card/display/key borders the first pass had dropped, the
+  `keys · operators` hint row, exact grid fractions
+  (`minmax(0,1.05fr) minmax(0,.95fr)`) instead of fixed card widths, and
+  several colors the two components share only by coincidence of value
+  (the request path color is literally the same purple as the `xʸ` key).
+  Deviated from the mockup deliberately in two places: the endpoint path
+  is the real `/api/v1/calculations`, not the mockup's placeholder, and
+  the overflow edge case is `2^5000` (the backend's actual exponent cap)
+  rather than the mockup's fake `1e308 × 10`, since decimal arithmetic
+  doesn't overflow the way its float64 demo logic did.

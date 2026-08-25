@@ -66,6 +66,11 @@
   --color-calc-eq: #9bf3d4;
   --color-calc-eq-text: #150c24;
   --color-calc-eq-hover: #c7ffeb;
+  --color-calc-error-strong: #f06aa8;
+  --color-calc-api-label: #a794c4;
+  --color-calc-code-text: #d9cdf0;
+  --color-calc-code-bg: #10081c;
+  --color-calc-edge-text: #e4daf5;
 }
 
 :root {

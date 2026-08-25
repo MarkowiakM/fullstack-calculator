@@ -217,6 +217,23 @@ describe("reducer — error", () => {
   });
 });
 
+describe("reducer — RUN", () => {
+  it("jumps straight to computing from any state, for externally triggered calculations", () => {
+    const states: State[] = [enteringFirst("123"), { status: "result", value: "3" }];
+    for (const s of states) {
+      expect(
+        reducer(s, { type: "RUN", requestId: 5, operation: "divide", operands: ["12", "0"] }),
+      ).toEqual({
+        status: "computing",
+        requestId: 5,
+        operation: "divide",
+        operands: ["12", "0"],
+        preview: "0",
+      });
+    }
+  });
+});
+
 describe("reducer — CLEAR", () => {
   it("resets from any state", () => {
     const states: State[] = [

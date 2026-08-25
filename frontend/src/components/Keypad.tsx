@@ -14,10 +14,10 @@ interface KeypadProps {
 type Kind = "num" | "fn" | "op" | "eq";
 
 const KIND_CLASSES: Record<Kind, string> = {
-  num: "bg-calc-num/7 text-calc-text hover:bg-calc-num/13",
-  fn: "bg-calc-fn/14 text-calc-fn-text border-calc-fn-border/26 hover:bg-calc-fn/24",
+  num: "bg-calc-num/7 text-calc-text border-calc-num/10 hover:bg-calc-num/13",
+  fn: "bg-calc-fn/14 text-calc-fn-text border-calc-fn-border/26 hover:bg-calc-fn/24 text-lg",
   op: "bg-calc-op/30 text-calc-text border-calc-op-border/34 font-semibold hover:bg-calc-op/48",
-  eq: "bg-calc-eq text-calc-eq-text font-bold text-2xl hover:bg-calc-eq-hover",
+  eq: "bg-calc-eq text-calc-eq-text border-calc-eq font-bold text-2xl hover:bg-calc-eq-hover",
 };
 
 interface KeyDef {
@@ -60,7 +60,7 @@ function Key({ def, onPress }: { def: KeyDef; onPress: (key: KeyPress) => void }
       type="button"
       aria-label={def.ariaLabel}
       onClick={() => onPress(def.press)}
-      className={`font-poppins focus-visible:ring-calc-eq h-[62px] rounded-2xl border border-transparent text-xl transition-[background-color] duration-150 outline-none focus-visible:ring-2 active:translate-y-px active:scale-[.985] ${
+      className={`font-poppins focus-visible:ring-calc-eq h-[62px] rounded-2xl border text-xl font-medium transition-[background-color,border-color] duration-150 outline-none focus-visible:ring-2 active:translate-y-px active:scale-[.985] ${
         def.span === 2 ? "col-span-2" : ""
       } ${KIND_CLASSES[def.kind]}`}
     >
