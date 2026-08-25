@@ -128,3 +128,13 @@ driven than a polished one-shot prompt would be.
 - Table-driven tests per operation, `errors.Is` against sentinel errors.
   95.5% coverage.
 
+## Phase 10 — Full HTTP API layer
+
+- `internal/api` replaces the walking skeleton's health-only mux:
+  `POST /api/v1/calculations` dispatches on an `operation → {arity, fn}`
+  map, CORS/recover/request-id/timeout middleware, sentinel errors mapped
+  to `{status, code}` in one place.
+- Registered the route without a method prefix so CORS middleware can
+  answer an `OPTIONS` preflight before the handler's own method check runs
+  — a method-prefixed pattern 405s the preflight at the mux level first.
+

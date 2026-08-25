@@ -3,7 +3,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"log"
 	"net/http"
@@ -11,24 +10,24 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/MarkowiakM/fullstack-calculator/backend/internal/api"
 )
 
 func main() {
 	port := envOr("PORT", "8080")
-
-	mux := http.NewServeMux()
-	mux.HandleFunc("GET /health", healthHandler)
+	allowedOrigin := envOr("ALLOWED_ORIGIN", "http://localhost:5173")
 
 	srv := &http.Server{
 		Addr:         ":" + port,
-		Handler:      mux,
+		Handler:      api.NewMux(allowedOrigin),
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 		IdleTimeout:  60 * time.Second,
 	}
 
 	go func() {
-		log.Printf("server listening on :%s", port)
+		log.Printf("server listening on :%s (allowed origin: %s)", port, allowedOrigin)
 		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			log.Fatalf("server error: %v", err)
 		}
@@ -45,11 +44,6 @@ func main() {
 		log.Fatalf("graceful shutdown failed: %v", err)
 	}
 	log.Println("server stopped")
-}
-
-func healthHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]string{"status": "ok"})
 }
 
 func envOr(key, fallback string) string {
