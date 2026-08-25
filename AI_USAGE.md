@@ -150,3 +150,13 @@ driven than a polished one-shot prompt would be.
   reference from a page served at `/docs` (no trailing slash) resolves
   against the parent path per normal URL rules, not `/docs/openapi.yaml`.
 
+## Phase 12 — Frontend API client
+
+- `types.ts` (`Operation`/`BinaryOp`) + `api/client.ts` (axios), a relative
+  `/api/v1/calculations` path, unchanged through both the Vite dev proxy and
+  nginx's reverse proxy.
+- Non-2xx responses and network failures are wrapped into a friendlier
+  `CalculationError`; a cancellation (`axios.isCancel`) is re-thrown as-is
+  so the reducer can tell it apart from a real failure.
+- 100% statement coverage.
+
