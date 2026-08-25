@@ -57,12 +57,12 @@
   --color-calc-text-dim: #9787b4;
   --color-calc-text-muted: #7a6c93;
   --color-calc-error: #ff9ac6;
-  --color-calc-num: rgba(243, 237, 255, 0.07);
-  --color-calc-fn: rgba(183, 155, 255, 0.14);
+  --color-calc-num: #f3edff;
+  --color-calc-fn: #b79bff;
   --color-calc-fn-text: #dccfff;
-  --color-calc-fn-border: rgba(183, 155, 255, 0.26);
-  --color-calc-op: rgba(139, 63, 232, 0.3);
-  --color-calc-op-border: rgba(183, 155, 255, 0.34);
+  --color-calc-fn-border: #b79bff;
+  --color-calc-op: #8b3fe8;
+  --color-calc-op-border: #b79bff;
   --color-calc-eq: #9bf3d4;
   --color-calc-eq-text: #150c24;
   --color-calc-eq-hover: #c7ffeb;

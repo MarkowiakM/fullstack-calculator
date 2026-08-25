@@ -200,3 +200,10 @@ driven than a polished one-shot prompt would be.
   aria-live="polite"`.
 - Verified with a Playwright screenshot (both a mid-entry and an error
   state) before moving on. 100% statement coverage.
+
+## Phase 17 — Keypad component
+
+- Caught a real bug before it shipped: opacity modifiers like `bg-calc-fn/[1.7]`
+  aren't valid Tailwind syntax (0–100%, not a multiplier) — redefined the
+  translucent tokens as solid colors and applied opacity via the standard
+  `/N` modifier.
