@@ -181,3 +181,10 @@ driven than a polished one-shot prompt would be.
   cancelling a pending operator, `=` refusing to fire with no second
   operand) and the stale-requestId discard. 100% statement coverage.
 
+## Phase 15 — Tailwind theme tokens
+
+- Sezzle-purple palette + Poppins/DM Mono (Google Fonts) added as
+  `@theme`/`:root` tokens.
+- Google Fonts `@import` had to move to the very first line: `@import`
+  rules must precede all other rules.
+
